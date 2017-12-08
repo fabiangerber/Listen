@@ -5,7 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
@@ -13,7 +16,7 @@ class PersonTest {
 
 	private ArrayList<Person> personen;
 
-	public void setup() {
+	@BeforeEach	public void setup() {
 		personen = new ArrayList<Person>();
 		personen.add(new Person("Hans", "Müller", 37));
 		personen.add(new Person("Lukas", "Müller", 23));
@@ -23,6 +26,7 @@ class PersonTest {
 		personen.add(new Person("Alexander", "Zimmermann", 18));
 	}
 	
+	@AfterEach
 	public void printPersonenListe() {
 		personen.stream().forEach(p-> System.out.println(p.toString()));
 		System.out.println("");
@@ -30,58 +34,36 @@ class PersonTest {
 
 	@Test
 	void SortVornameWithComparator() {
-		setup();
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		System.out.println("Sortiert nach Vorname mit Comparator");
 		Comparator<Person> c = new VornameComparator();
 		personen.sort(c);
 		assertEquals(personen.get(0).getVorname(), "Alexander");
-		printPersonenListe();
 	}
 	
 	@Test
 	void SortNachnameWithComparator() {
-		setup();
 		System.out.println("Sortiert nach Nachname mit Comparator");
 		Comparator<Person> c = new NachnameComparator();
 		personen.sort(c);
 		assertEquals(personen.get(0).getVorname(), "Anna");
-		printPersonenListe();
 	}
 	
 	@Test
 	void sortAlterWithLambdaExpr() {
-		setup();
 		System.out.println("Sortiert nach Alter mit Lambda");
 		personen.sort((p1, p2) -> p1.getAge() - p2.getAge());
 		assertEquals(personen.get(0).getVorname(), "Hannes");
-		printPersonenListe();
 	}
 	
 	@Test
 	void useStreamFindVornameWithL() {
-		setup();
 		System.out.println("Gefiltert nach Vorname mit L mit Stream");
-		List<Person> personenWithL = new ArrayList<Person>();
-		personen.stream()
+		List<Person> persWithL = personen.stream()
 			.filter(person -> person.getVorname().startsWith("L"))
 			.sorted((p1, p2) ->  p1.getAge()-p2.getAge())
-			.forEach(p->System.out.println(p.toString()));
-		System.out.println("");
+			.collect(Collectors.toList());
+		personen.clear();
+		personen.addAll(persWithL);
 	}
 	
 	@Test 
